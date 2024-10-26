@@ -1,8 +1,8 @@
 module Main where
 
-import qualified Week1 (someFunc)
+import  Week1 (toDigits)
 
 main :: IO ()
 main = do
-  putStrLn "Hello, Haskell!"
-  Week1.someFunc
+  print "Hello, Haskell!"
+  print (toDigits 2)

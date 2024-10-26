@@ -1,4 +1,7 @@
-module Week1 (someFunc) where
+module Week1 (toDigits, toDigitsRev) where
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+toDigits :: Integer -> [Integer]
+toDigits _ = [1]
+
+toDigitsRev :: Integer -> [Integer]
+toDigitsRev _ = [1]

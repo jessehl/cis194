@@ -16,6 +16,7 @@ library
     build-depends:    base ^>=4.17.2.1
     hs-source-dirs:   src
     default-language: GHC2021
+    ghc-options: -Wall
 
 executable cis194
     import:           warnings
@@ -26,13 +27,20 @@ executable cis194
 
     hs-source-dirs:   app
     default-language: GHC2021
+    ghc-options: -Wall
 
 test-suite cis194-test
     import:           warnings
     default-language: GHC2021
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
-    main-is:          Main.hs
+    main-is:          Spec.hs
+    ghc-options: -Wall
+    other-modules:
+        Week1Spec
     build-depends:
         base ^>=4.17.2.1,
-        cis194
+        cis194,
+        hspec >=2.7
+    build-tool-depends: 
+        hspec-discover:hspec-discover == 2.*

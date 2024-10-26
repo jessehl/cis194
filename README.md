@@ -10,5 +10,7 @@ cabal run
 Execute tests:
 ```sh
 cabal test
+# Or:
+cabal test --test-show-details=direct
 ```
 
