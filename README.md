@@ -1,5 +1,5 @@
 # cis194
-Homework assignments of [CIS 194: Introduction to Haskell](https://www.cis.upenn.edu/~cis1940/spring13/).
+Homework assignments of [CIS 194: Introduction to Haskell](https://www.cis.upenn.edu/~cis1940/spring13/lectures.html).
 
 ### Usage
 Running the app:
