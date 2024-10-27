@@ -15,7 +15,7 @@ library
     exposed-modules:  Week1
     build-depends:    base ^>=4.17.2.1
     hs-source-dirs:   src
-    default-language: GHC2020
+    default-language: GHC2021
 
 executable cis194
     import:           warnings
@@ -25,11 +25,11 @@ executable cis194
         cis194
 
     hs-source-dirs:   app
-    default-language: GHC2020
+    default-language: GHC2021
 
 test-suite cis194-test
     import:           warnings
-    default-language: GHC2020
+    default-language: GHC2021
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
     main-is:          Spec.hs
