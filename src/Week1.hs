@@ -9,14 +9,11 @@ toDigits x
 toDigitsRev :: Integer -> [Integer]
 toDigitsRev xs = reverse(toDigits xs)
 
-doubleEveryOtherA :: [Integer] -> [Integer]
-doubleEveryOtherA [] = []
-doubleEveryOtherA [x] = [x * 2]
-doubleEveryOtherA [x1,x2] = [x1 * 2, x2]
-doubleEveryOtherA (x1:x2:xs) = [x1 * 2, x2] ++ doubleEveryOtherA xs
-
 doubleEveryOtherB :: [Integer] -> [Integer]
-doubleEveryOtherB lst = zipWith (*) lst (cycle [2, 1])
+doubleEveryOtherB lst = zipWith (*) lst (if even(length lst) then cycle [2, 1] else cycle[1,2])
 
 sumDigits :: [Integer]  -> Integer
 sumDigits x = sum (x >>= toDigits)
+
+validate :: Integer -> Bool
+validate x =  sumDigits (doubleEveryOtherB (toDigits x)) `mod` 10 == 0

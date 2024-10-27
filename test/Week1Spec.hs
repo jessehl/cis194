@@ -25,15 +25,20 @@ spec = do
     it "should work for empty lists" $
       doubleEveryOtherB [] `shouldBe` []
     it "should work for lists with one elem" $
-      doubleEveryOtherB [1] `shouldBe` [2]
+      doubleEveryOtherB [1] `shouldBe` [1]
     it "should work" $
       doubleEveryOtherB [1,3,5,2] `shouldBe` [2,3,10,2]
     it "should work with huge list" $
       doubleEveryOtherB (take 100 (cycle [4, 2])) `shouldBe` take 100 (cycle [8,2])
+    it "should work for examples in homework" $
+      doubleEveryOtherB [8,7,6,5] == [16,7,12,5] && doubleEveryOtherB [1,2,3] == [1,4,3] `shouldBe` True
 
   describe "sumdigits" $ do
     it "should work" $
       sumDigits [100, 12] `shouldBe` 4
     it "should work for other list" $
       sumDigits [16,7,12,5] `shouldBe` 22
-    
+
+  describe "validate" $ do
+    it "should work" $ 
+      validate 4012888888881881 == True && validate 4012888888881882 == False `shouldBe` True
