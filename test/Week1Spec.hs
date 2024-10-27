@@ -31,4 +31,9 @@ spec = do
     it "should work with huge list" $
       doubleEveryOtherB (take 100 (cycle [4, 2])) `shouldBe` take 100 (cycle [8,2])
 
-
+  describe "sumdigits" $ do
+    it "should work" $
+      sumDigits [100, 12] `shouldBe` 4
+    it "should work for other list" $
+      sumDigits [16,7,12,5] `shouldBe` 22
+    

@@ -17,3 +17,6 @@ doubleEveryOtherA (x1:x2:xs) = [x1 * 2, x2] ++ doubleEveryOtherA xs
 
 doubleEveryOtherB :: [Integer] -> [Integer]
 doubleEveryOtherB lst = zipWith (*) lst (cycle [2, 1])
+
+sumDigits :: [Integer]  -> Integer
+sumDigits x = sum (x >>= toDigits)
