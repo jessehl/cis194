@@ -1,8 +1,8 @@
 module Main where
 
-import  Week1 (toDigits)
+import  Week1
 
 main :: IO ()
 main = do
   print "Hello, Haskell!"
-  print (toDigits 2)
+  print (doubleEveryOtherB [23,32])

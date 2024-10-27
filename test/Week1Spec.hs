@@ -20,3 +20,15 @@ spec = do
       toDigitsRev 0 `shouldBe` []
     it "converts -17 to []" $
       toDigitsRev (-17) `shouldBe` []
+
+  describe "doubleEveryOther" $ do
+    it "should work for empty lists" $
+      doubleEveryOtherB [] `shouldBe` []
+    it "should work for lists with one elem" $
+      doubleEveryOtherB [1] `shouldBe` [2]
+    it "should work" $
+      doubleEveryOtherB [1,3,5,2] `shouldBe` [2,3,10,2]
+    it "should work with huge list" $
+      doubleEveryOtherB (take 100 (cycle [4, 2])) `shouldBe` take 100 (cycle [8,2])
+
+

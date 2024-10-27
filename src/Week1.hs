@@ -1,4 +1,4 @@
-module Week1 (toDigits, toDigitsRev) where
+module Week1 where
 
 toDigits :: Integer -> [Integer]
 toDigits x 
@@ -9,3 +9,11 @@ toDigits x
 toDigitsRev :: Integer -> [Integer]
 toDigitsRev xs = reverse(toDigits xs)
 
+doubleEveryOtherA :: [Integer] -> [Integer]
+doubleEveryOtherA [] = []
+doubleEveryOtherA [x] = [x * 2]
+doubleEveryOtherA [x1,x2] = [x1 * 2, x2]
+doubleEveryOtherA (x1:x2:xs) = [x1 * 2, x2] ++ doubleEveryOtherA xs
+
+doubleEveryOtherB :: [Integer] -> [Integer]
+doubleEveryOtherB lst = zipWith (*) lst (cycle [2, 1])
