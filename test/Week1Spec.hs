@@ -41,4 +41,4 @@ spec = do
 
   describe "validate" $ do
     it "should work" $ 
-      validate 4012888888881881 == True && validate 4012888888881882 == False `shouldBe` True
+      validate 4012888888881881 && not (validate 401288888888188) `shouldBe` True
