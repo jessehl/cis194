@@ -20,6 +20,7 @@ jobs:
         path: |
           ~/.cabal
           dist-newstyle
+          ~/.ghcup
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
