@@ -42,3 +42,7 @@ spec = do
   describe "validate" $ do
     it "should work" $ 
       validate 4012888888881881 && not (validate 401288888888188) `shouldBe` True
+
+  describe "hanoi" $ do
+    it "should work using example from homework" $
+      hanoi 2 "source" "spare" "target" == [("source", "spare"), ("source","target"), ("spare","target")]
