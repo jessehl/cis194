@@ -54,7 +54,7 @@ spec = do
     it "should work using example from homework" $ 
        hanoi' 2 0 (singleton 1) 2 `shouldBe` [(0, 1), (0,2), (1,2)]
     it "should have 2^15 -1 moves for 15 disks and 3 pegs" $
-      length (hanoi' 2 0 (singleton 1) 2) `shouldBe` hanoiCount 15
+      length (hanoi' 15 0 (singleton 1) 2) `shouldBe` hanoiCount 15
 
   where
     hanoiCount :: Int -> Int
