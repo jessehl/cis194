@@ -1,6 +1,5 @@
 module Week1Spec (spec) where
 
-import Data.List.NonEmpty (fromList, singleton)
 import Test.Hspec
 import Week1
 

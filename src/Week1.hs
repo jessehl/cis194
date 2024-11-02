@@ -1,7 +1,5 @@
 module Week1 where
 
-import Data.List.NonEmpty qualified as NonEmpty
-
 toDigits :: Integer -> [Integer]
 toDigits x
   | x < 1 = []
