@@ -1,6 +1,7 @@
 module Week1Spec (spec) where
 
 import Test.Hspec
+import Data.List.NonEmpty(singleton)
 import Week1
 
 spec :: Spec
@@ -47,11 +48,14 @@ spec = do
     it "should work using example from homework" $
       hanoi 2 "source" "spare" "target" == [("source", "spare"), ("source", "target"), ("spare", "target")]
     it "should have 2^15 -1 moves for 15 disks and 3 pegs" $
-      length (hanoi 15 "source" "spare" "target") `shouldBe` count
+      length (hanoi 15 "source" "spare" "target") `shouldBe` hanoiCount 15
+  
+  describe "hanoi' (generalised version)" $ do 
+    it "should work using example from homework" $ 
+       hanoi' 2 0 (singleton 1) 2 `shouldBe` [(0, 1), (0,2), (1,2)]
+    it "should have 2^15 -1 moves for 15 disks and 3 pegs" $
+      length (hanoi' 2 0 (singleton 1) 2) `shouldBe` hanoiCount 15
+
   where
-    n, x :: Int 
-    n = 2
-    x = 15
-    expo :: Int
-    expo = n ^ x
-    count = expo - 1
+    hanoiCount :: Int -> Int
+    hanoiCount n = 2 ^ n - 1

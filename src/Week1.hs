@@ -1,4 +1,5 @@
 module Week1 where
+import Data.List.NonEmpty (NonEmpty)
 
 toDigits :: Integer -> [Integer]
 toDigits x 
@@ -24,3 +25,6 @@ hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
 hanoi 0 _ _ _ = []
 hanoi 1 a _ c = [(a, c)]
 hanoi n a b c =  hanoi (n-1) a c b ++ hanoi 1 a b c ++ hanoi (n-1) b a c
+
+hanoi' :: Int -> Int -> NonEmpty Int -> Int -> [(Int, Int)]
+hanoi' _ _ _ _ = []
