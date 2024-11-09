@@ -12,8 +12,7 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  Week1,Week2.Week2
-    other-modules:    Week2.Log
+    exposed-modules:  Week1,Week2.Week2,Week2.Log
     build-depends:    base ^>=4.17.2.1
     hs-source-dirs:   src
     default-language: GHC2021
@@ -36,6 +35,7 @@ test-suite cis194-test
     main-is:          Spec.hs
     other-modules:
         Week1Spec
+        Week2Spec
     build-depends:
         base ^>=4.17.2.1,
         cis194,
