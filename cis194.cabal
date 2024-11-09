@@ -12,7 +12,8 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  Week1
+    exposed-modules:  Week1,Week2.Week2
+    other-modules:    Week2.Log
     build-depends:    base ^>=4.17.2.1
     hs-source-dirs:   src
     default-language: GHC2021
