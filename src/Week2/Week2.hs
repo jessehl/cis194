@@ -4,14 +4,18 @@ import Data.Function ((&))
 import Week2.Log
 import qualified Data.Bifunctor
 import Data.Char (isDigit, digitToInt)
+import Data.Maybe (fromMaybe)
 
 parseMessage :: String -> LogMessage
-parseMessage _ = undefined
-
+parseMessage line = fromMaybe (Unknown line) $ do 
+  (messageType, remainder1) <- getType line
+  (timeStamp, remainder2) <- stripLeftInt remainder1
+  Just (LogMessage messageType timeStamp remainder2)
+ 
 consumeInt :: Int -> [Char] -> Maybe(Int, [Char])
 consumeInt acc [] = Just(acc, []) 
 consumeInt acc (x:xs)
-    | x == ' '   = Just(acc, [])
+    | x == ' '   = Just(acc, xs)
     | isDigit x  = consumeInt (digitToInt x + acc * 10) xs
     | otherwise  = Nothing
 
