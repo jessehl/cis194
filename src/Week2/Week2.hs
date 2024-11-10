@@ -6,6 +6,9 @@ import qualified Data.Bifunctor
 import Data.Char (isDigit, digitToInt)
 import Data.Maybe (fromMaybe)
 
+parse :: String -> [LogMessage]
+parse str = str & lines & fmap parseMessage
+
 parseMessage :: String -> LogMessage
 parseMessage line = fromMaybe (Unknown line) $ do 
   (messageType, remainder1) <- getType line
