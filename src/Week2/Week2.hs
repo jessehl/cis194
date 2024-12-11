@@ -44,5 +44,11 @@ insert newMessage@(LogMessage _ newTimestamp _) tree = case tree of
      if newTimestamp < oldTimestamp then Node (insert newMessage l) oldMessage r
      else Node l oldMessage (insert newMessage r)
 
+-- Can be implemented more generally, as fold.
+toList :: MessageTree -> [LogMessage]
+toList Leaf = [] 
+toList (Node l (Unknown _) r)  = toList l ++ toList r
+toList (Node l msg r)          = toList l ++ [msg] ++ toList r
+
 sortMessages :: [LogMessage] -> MessageTree 
 sortMessages = foldl (flip insert) Leaf
