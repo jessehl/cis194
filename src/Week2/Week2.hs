@@ -33,3 +33,16 @@ getType line = case line of
   'W' : ' ' : xs -> Just (Warning, xs)
   'E' : ' ' : xs -> stripLeftInt xs & fmap (Data.Bifunctor.first Error)
   _ -> Nothing
+
+
+insert :: LogMessage -> MessageTree -> MessageTree
+insert (Unknown _) tree = tree
+insert newMessage@(LogMessage _ newTimestamp _) tree = case tree of 
+   Leaf                  -> Node Leaf newMessage Leaf
+   Node l (Unknown _) r  -> Node l newMessage r
+   Node l oldMessage@(LogMessage _ oldTimestamp _) r -> 
+     if newTimestamp < oldTimestamp then Node (insert newMessage l) oldMessage r
+     else Node l oldMessage (insert newMessage r)
+
+sortMessages :: [LogMessage] -> MessageTree 
+sortMessages = foldl (flip insert) Leaf
