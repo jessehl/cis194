@@ -1,13 +1,20 @@
+{-# LANGUAGE DeriveFoldable #-}
+
 module Week2.Week2 where
 
 import Data.Function ((&))
-import Week2.Log
+import Week2.Log (LogMessage (LogMessage, Unknown), MessageType (Info, Warning, Error))
 import qualified Data.Bifunctor
 import Data.Char (isDigit, digitToInt)
 import Data.Maybe (fromMaybe)
+import Data.Foldable (toList)
 
 parse :: String -> [LogMessage]
 parse str = str & lines & fmap parseMessage
+
+data Tree a = Leaf
+  | Node (Tree a) a (Tree a)
+  deriving Foldable
 
 parseMessage :: String -> LogMessage
 parseMessage line = fromMaybe (Unknown line) $ do 
@@ -35,7 +42,7 @@ getType line = case line of
   _ -> Nothing
 
 
-insert :: LogMessage -> MessageTree -> MessageTree
+insert :: LogMessage -> Tree LogMessage -> Tree LogMessage
 insert (Unknown _) tree = tree
 insert newMessage@(LogMessage _ newTimestamp _) tree = case tree of 
    Leaf                  -> Node Leaf newMessage Leaf
@@ -44,11 +51,9 @@ insert newMessage@(LogMessage _ newTimestamp _) tree = case tree of
      if newTimestamp < oldTimestamp then Node (insert newMessage l) oldMessage r
      else Node l oldMessage (insert newMessage r)
 
--- Can be implemented more generally, as fold.
-toList :: MessageTree -> [LogMessage]
-toList Leaf = [] 
-toList (Node l (Unknown _) r)  = toList l ++ toList r
-toList (Node l msg r)          = toList l ++ [msg] ++ toList r
 
-sortMessages :: [LogMessage] -> MessageTree 
-sortMessages = foldl (flip insert) Leaf
+build :: [LogMessage] -> Tree LogMessage
+build = foldl (flip insert) Leaf
+
+inorder :: Tree LogMessage -> [LogMessage]
+inorder = toList

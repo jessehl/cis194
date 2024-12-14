@@ -7,4 +7,4 @@ import Data.Foldable (traverse_)
 main :: IO ()
 main = do
    messages <- testParse parse 1000000 "resources/Week2/error.log"
-   traverse_ print (toList (sortMessages messages))
+   traverse_ print (inorder (build messages))
