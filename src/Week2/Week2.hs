@@ -22,51 +22,35 @@ data ParseResult a = ParseError | Parsed a String
 
 newtype Parser a = Parser { run :: String -> ParseResult a }
 
-bind :: Parser a -> (a -> Parser b) -> Parser b
-bind p f = Parser $ \s ->
-  case run p s of
-    ParseError -> ParseError
-    Parsed a rest -> run (f a) rest
-
-create :: a -> Parser a
-create a = Parser { run = Parsed a }
-
-
-fmap1 :: (a -> b) -> Parser a -> Parser b 
-fmap1 f pa = Parser $ \s -> case run pa s of 
-      ParseError -> ParseError  
-      Parsed a c -> Parsed (f a) c
-
 instance Functor Parser where 
-  fmap = fmap1
+  fmap :: (a -> b) -> Parser a -> Parser b
+  fmap f pa = Parser $ \s -> case run pa s of 
+    ParseError -> ParseError 
+    Parsed a c  -> Parsed (f a) c
 
--- Applicative instance
 instance Applicative Parser where
   pure :: a -> Parser a
   pure a = Parser { run = Parsed a }
 
   (<*>) :: Parser (a -> b) -> Parser a -> Parser b
-  (<*>) p a = Parser $ \s -> case run p s of 
+  (<*>) pab a = Parser $ \s -> case run pab s of 
       ParseError    -> ParseError 
       Parsed f rest -> run (fmap f a) rest
 
 
 instance Monad Parser where
-  return = pure
-
   (>>=) :: Parser a -> (a -> Parser b) -> Parser b
-  (>>=) = bind
+  (>>=) pa f = Parser $ \s -> case run pa s of 
+    ParseError    -> ParseError 
+    Parsed a rest -> run (f a) rest
 
-
-getInt :: Parser Int
-getInt = create 1
 
 myResult:: Parser (Int, Int, Int) 
 myResult = do 
   first  <- parseInt 
   second <- parseInt 
   third  <- parseInt 
-  create (first, second, third)
+  pure (first, second, third)
 
 parseInt :: Parser Int 
 parseInt = Parser $ \s -> case s of 
