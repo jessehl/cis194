@@ -6,14 +6,8 @@ module Week2.Week2 where
 import Data.Char (digitToInt, isDigit)
 import Data.Foldable (toList)
 import Data.Function ((&))
-import Week2.Log (LogMessage (LogMessage, Unknown), MessageType (Error, Info, Warning))
 import Data.List.NonEmpty (NonEmpty ((:|)))
-
-parse :: String -> [LogMessage]
-parse str = str & lines & fmap (run parseMessage) & foldMap (\case
-    Parsed msg _ -> [msg]
-    ParseError   -> []
-  )
+import Week2.Log (LogMessage (LogMessage, Unknown), MessageType (Error, Info, Warning))
 
 data Tree a
   = Leaf
@@ -21,6 +15,7 @@ data Tree a
   deriving (Foldable)
 
 type Remainder = String
+
 data ParseResult a = ParseError | Parsed a Remainder
   deriving (Show)
 
@@ -38,7 +33,7 @@ instance Applicative Parser where
 
   (<*>) :: Parser (a -> b) -> Parser a -> Parser b
   (<*>) pf a = Parser $ \s -> case run pf s of
-    ParseError    -> ParseError
+    ParseError -> ParseError
     Parsed f rest -> run (fmap f a) rest
 
 instance Monad Parser where
@@ -47,49 +42,57 @@ instance Monad Parser where
     ParseError -> ParseError
     Parsed a rest -> run (f a) rest
 
-parseMessage :: Parser LogMessage
-parseMessage = do
-  messageType <- getType
-  _           <- space
-  timeStamp   <- parseInt
-  _           <- space
-  remainder   <- parseUntil '\n'
-  pure (LogMessage messageType timeStamp remainder)
-
 space :: Parser Char
 space = satisfy (== ' ')
 
-parseUntil :: Char -> Parser String
-parseUntil char = parseList (satisfy (/= char))
-
 satisfy :: (Char -> Bool) -> Parser Char
 satisfy cond = Parser $ \case
-  (x: xs) | cond x -> Parsed x xs
-  _                -> ParseError
+  (x : xs) | cond x -> Parsed x xs
+  _ -> ParseError
 
 parseInt :: Parser Int
-parseInt = multiple (parseList (satisfy isDigit))
-  & fmap (fmap digitToInt) 
-  & fmap (foldr (\x acc -> acc * 10 + x) 0)
-
+parseInt =
+  multiple (parseList (satisfy isDigit))
+    & fmap (fmap digitToInt)
+    & fmap (foldr (\x acc -> acc * 10 + x) 0)
 
 multiple :: Parser [a] -> Parser (NonEmpty a)
 multiple pa = Parser $ \s -> case run pa s of
-   Parsed [] _        -> ParseError
-   Parsed (x:xs) rest -> Parsed (x :| xs) rest 
-   ParseError         -> ParseError
+  Parsed (x : xs) rest -> Parsed (x :| xs) rest
+  _ -> ParseError
 
 parseList :: Parser a -> Parser [a]
 parseList parser = Parser $ \s -> case run parser s of
-  ParseError  -> Parsed [] s
+  ParseError -> Parsed [] s
   Parsed x xs -> run (parseList parser & fmap (x :)) xs
 
 getType :: Parser MessageType
 getType = Parser $ \case
-  'I' : xs        -> Parsed Info xs
-  'W' : xs        -> Parsed Warning xs
-  'E' : ' ' : xs  -> run (parseInt & fmap Error) xs
-  _               -> ParseError
+  'I' : xs -> Parsed Info xs
+  'W' : xs -> Parsed Warning xs
+  'E' : ' ' : xs -> run (parseInt & fmap Error) xs
+  _ -> ParseError
+
+parseMessage :: Parser LogMessage
+parseMessage = do
+  messageType <- getType
+  _ <- space
+  timeStamp <- parseInt
+  _ <- space
+  LogMessage messageType timeStamp <$> remainder
+
+remainder :: Parser String
+remainder = Parser $ \s -> Parsed s []
+
+parse :: String -> [LogMessage]
+parse s =
+  lines s
+    & fmap (run parseMessage)
+    & foldMap
+      ( \case
+          Parsed msg _ -> [msg]
+          _ -> []
+      )
 
 insert :: LogMessage -> Tree LogMessage -> Tree LogMessage
 insert (Unknown _) tree = tree
