@@ -4,7 +4,7 @@
 module Week2.Week2 where
 
 import Data.Char (digitToInt, isDigit)
-import Data.Foldable (toList)
+import Data.Foldable (toList, Foldable (foldl'))
 import Data.Function ((&))
 import Data.List.NonEmpty (NonEmpty ((:|)))
 import Week2.Log (LogMessage (LogMessage, Unknown), MessageType (Error, Info, Warning))
@@ -54,7 +54,7 @@ parseInt :: Parser Int
 parseInt =
   multiple (parseList (satisfy isDigit))
     & fmap (fmap digitToInt)
-    & fmap (foldr (\x acc -> acc * 10 + x) 0)
+    & fmap (foldl' (\acc x -> acc * 10 + x) 0)
 
 multiple :: Parser [a] -> Parser (NonEmpty a)
 multiple pa = Parser $ \s -> case run pa s of
@@ -85,12 +85,11 @@ remainder :: Parser String
 remainder = Parser $ \s -> Parsed s []
 
 parse :: String -> [LogMessage]
-parse s = lines s
-    & fmap (run parseMessage)
-    & foldMap( \case
-      Parsed msg _ -> [msg]
-      _ -> []
-    )
+parse string = lines string & fmap (run parseMessage) 
+  & foldMap( \case
+    Parsed msg _ -> [msg]
+    _            -> []   
+  )
 
 insert :: LogMessage -> Tree LogMessage -> Tree LogMessage
 insert (Unknown _) tree = tree
