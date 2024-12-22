@@ -33,13 +33,13 @@ instance Applicative Parser where
 
   (<*>) :: Parser (a -> b) -> Parser a -> Parser b
   (<*>) pf a = Parser $ \s -> case run pf s of
-    ParseError -> ParseError
+    ParseError    -> ParseError
     Parsed f rest -> run (fmap f a) rest
 
 instance Monad Parser where
   (>>=) :: Parser a -> (a -> Parser b) -> Parser b
   (>>=) pa f = Parser $ \s -> case run pa s of
-    ParseError -> ParseError
+    ParseError    -> ParseError
     Parsed a rest -> run (f a) rest
 
 space :: Parser Char
@@ -48,7 +48,7 @@ space = satisfy (== ' ')
 satisfy :: (Char -> Bool) -> Parser Char
 satisfy cond = Parser $ \case
   (x : xs) | cond x -> Parsed x xs
-  _ -> ParseError
+  _                 -> ParseError
 
 parseInt :: Parser Int
 parseInt =
@@ -59,45 +59,43 @@ parseInt =
 multiple :: Parser [a] -> Parser (NonEmpty a)
 multiple pa = Parser $ \s -> case run pa s of
   Parsed (x : xs) rest -> Parsed (x :| xs) rest
-  _ -> ParseError
+  _                    -> ParseError
 
 parseList :: Parser a -> Parser [a]
 parseList parser = Parser $ \s -> case run parser s of
-  ParseError -> Parsed [] s
+  ParseError  -> Parsed [] s
   Parsed x xs -> run (parseList parser & fmap (x :)) xs
 
 getType :: Parser MessageType
 getType = Parser $ \case
-  'I' : xs -> Parsed Info xs
-  'W' : xs -> Parsed Warning xs
+  'I' : xs       -> Parsed Info xs
+  'W' : xs       -> Parsed Warning xs
   'E' : ' ' : xs -> run (parseInt & fmap Error) xs
-  _ -> ParseError
+  _              -> ParseError
 
 parseMessage :: Parser LogMessage
 parseMessage = do
   messageType <- getType
-  _ <- space
-  timeStamp <- parseInt
-  _ <- space
+  _           <- space
+  timeStamp   <- parseInt
+  _           <- space
   LogMessage messageType timeStamp <$> remainder
 
 remainder :: Parser String
 remainder = Parser $ \s -> Parsed s []
 
 parse :: String -> [LogMessage]
-parse s =
-  lines s
+parse s = lines s
     & fmap (run parseMessage)
-    & foldMap
-      ( \case
-          Parsed msg _ -> [msg]
-          _ -> []
-      )
+    & foldMap( \case
+      Parsed msg _ -> [msg]
+      _ -> []
+    )
 
 insert :: LogMessage -> Tree LogMessage -> Tree LogMessage
 insert (Unknown _) tree = tree
 insert newMessage@(LogMessage _ newTimestamp _) tree = case tree of
-  Leaf -> Node Leaf newMessage Leaf
+  Leaf                 -> Node Leaf newMessage Leaf
   Node l (Unknown _) r -> Node l newMessage r
   Node l oldMessage@(LogMessage _ oldTimestamp _) r ->
     if newTimestamp < oldTimestamp
