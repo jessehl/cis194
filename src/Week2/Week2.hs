@@ -17,7 +17,7 @@ data Tree a
 type Remainder = String
 
 data ParseResult a = ParseError | Parsed a Remainder
-  deriving (Show)
+  deriving (Show, Eq)
 
 newtype Parser a = Parser {run :: String -> ParseResult a}
 

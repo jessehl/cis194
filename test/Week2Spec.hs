@@ -8,6 +8,6 @@ spec :: Spec
 spec = do
   describe "parseMessage" $ do
     it "should parse properly" $
-      parseMessage "E 2 562 help help" == LogMessage (Error 2) 562 "help help" &&
-      parseMessage "I 29 la la la" == LogMessage Info 29 "la la la" &&
-      parseMessage "This is not in the right format" == Unknown "This is not in the right format" `shouldBe` True
+      run parseMessage "E 2 562 help help" == Parsed (LogMessage (Error 2) 562 "help help") "" &&
+      run parseMessage "I 29 la la la" == Parsed (LogMessage Info 29 "la la la") "" &&
+      run parseMessage "This is not in the right format" == ParseError `shouldBe` True
