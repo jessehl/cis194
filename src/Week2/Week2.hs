@@ -1,23 +1,27 @@
 {-# LANGUAGE DeriveFoldable #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Week2.Week2 where
 
-import Data.Bifunctor qualified
 import Data.Char (digitToInt, isDigit)
 import Data.Foldable (toList)
 import Data.Function ((&))
-import Data.Maybe (fromMaybe)
 import Week2.Log (LogMessage (LogMessage, Unknown), MessageType (Error, Info, Warning))
+import Data.List.NonEmpty (NonEmpty ((:|)))
 
 parse :: String -> [LogMessage]
-parse str = str & lines & fmap parseMessage
+parse str = str & lines & fmap (run parseMessage) & foldMap (\case
+    Parsed msg _ -> [msg]
+    ParseError   -> []
+  )
 
 data Tree a
   = Leaf
   | Node (Tree a) a (Tree a)
   deriving (Foldable)
 
-data ParseResult a = ParseError | Parsed a String
+type Remainder = String
+data ParseResult a = ParseError | Parsed a Remainder
   deriving (Show)
 
 newtype Parser a = Parser {run :: String -> ParseResult a}
@@ -33,8 +37,8 @@ instance Applicative Parser where
   pure a = Parser {run = Parsed a}
 
   (<*>) :: Parser (a -> b) -> Parser a -> Parser b
-  (<*>) pab a = Parser $ \s -> case run pab s of
-    ParseError -> ParseError
+  (<*>) pf a = Parser $ \s -> case run pf s of
+    ParseError    -> ParseError
     Parsed f rest -> run (fmap f a) rest
 
 instance Monad Parser where
@@ -43,41 +47,49 @@ instance Monad Parser where
     ParseError -> ParseError
     Parsed a rest -> run (f a) rest
 
-myResult :: Parser (Int, Int, Int)
-myResult = do
-  first <- parseInt
-  second <- parseInt
-  third <- parseInt
-  pure (first, second, third)
+parseMessage :: Parser LogMessage
+parseMessage = do
+  messageType <- getType
+  _           <- space
+  timeStamp   <- parseInt
+  _           <- space
+  remainder   <- parseUntil '\n'
+  pure (LogMessage messageType timeStamp remainder)
+
+space :: Parser Char
+space = satisfy (== ' ')
+
+parseUntil :: Char -> Parser String
+parseUntil char = parseList (satisfy (/= char))
+
+satisfy :: (Char -> Bool) -> Parser Char
+satisfy cond = Parser $ \case
+  (x: xs) | cond x -> Parsed x xs
+  _                -> ParseError
 
 parseInt :: Parser Int
-parseInt = Parser $ \s -> case s of
-  s : xs -> Parsed (digitToInt s) xs
-  _ -> ParseError
+parseInt = multiple (parseList (satisfy isDigit))
+  & fmap (fmap digitToInt) 
+  & fmap (foldr (\x acc -> acc * 10 + x) 0)
 
-parseMessage :: String -> LogMessage
-parseMessage line = fromMaybe (Unknown line) $ do
-  (messageType, remainder1) <- getType line
-  (timeStamp, remainder2) <- stripLeftInt remainder1
-  Just (LogMessage messageType timeStamp remainder2)
 
-consumeInt :: Int -> [Char] -> Maybe (Int, [Char])
-consumeInt acc [] = Just (acc, [])
-consumeInt acc (x : xs)
-  | x == ' ' = Just (acc, xs)
-  | isDigit x = consumeInt (digitToInt x + acc * 10) xs
-  | otherwise = Nothing
+multiple :: Parser [a] -> Parser (NonEmpty a)
+multiple pa = Parser $ \s -> case run pa s of
+   Parsed [] _        -> ParseError
+   Parsed (x:xs) rest -> Parsed (x :| xs) rest 
+   ParseError         -> ParseError
 
-stripLeftInt :: [Char] -> Maybe (Int, [Char])
-stripLeftInt [] = Nothing
-stripLeftInt str = consumeInt 0 str
+parseList :: Parser a -> Parser [a]
+parseList parser = Parser $ \s -> case run parser s of
+  ParseError  -> Parsed [] s
+  Parsed x xs -> run (parseList parser & fmap (x :)) xs
 
-getType :: String -> Maybe (MessageType, String)
-getType line = case line of
-  'I' : ' ' : xs -> Just (Info, xs)
-  'W' : ' ' : xs -> Just (Warning, xs)
-  'E' : ' ' : xs -> stripLeftInt xs & fmap (Data.Bifunctor.first Error)
-  _ -> Nothing
+getType :: Parser MessageType
+getType = Parser $ \case
+  'I' : xs        -> Parsed Info xs
+  'W' : xs        -> Parsed Warning xs
+  'E' : ' ' : xs  -> run (parseInt & fmap Error) xs
+  _               -> ParseError
 
 insert :: LogMessage -> Tree LogMessage -> Tree LogMessage
 insert (Unknown _) tree = tree
