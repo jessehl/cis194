@@ -17,7 +17,7 @@ data Tree a
 type Remainder = String
 
 data ParseResult a = ParseError | Parsed a Remainder
-  deriving (Show, Eq)
+  deriving (Show, Eq, Foldable)
 
 newtype Parser a = Parser {run :: String -> ParseResult a}
 
@@ -82,11 +82,7 @@ remainder :: Parser String
 remainder = Parser $ \s -> Parsed s []
 
 parse :: String -> [LogMessage]
-parse string = lines string & fmap (run parseMessage)
-  & foldMap ( \case
-    Parsed msg _ -> [msg]
-    _            -> []
-  )
+parse str = concatMap (toList . run parseMessage) (lines str)
 
 insert :: LogMessage -> Tree LogMessage -> Tree LogMessage
 insert message Leaf = Node Leaf message Leaf
