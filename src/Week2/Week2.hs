@@ -7,7 +7,7 @@ import Data.Char (digitToInt, isDigit)
 import Data.Foldable (toList, Foldable (foldl'))
 import Data.Function ((&))
 import Data.List.NonEmpty (NonEmpty ((:|)))
-import Week2.Log (LogMessage (LogMessage, Unknown), MessageType (Error, Info, Warning))
+import Week2.Log (LogMessage (LogMessage) , MessageType (Error, Info, Warning))
 
 data Tree a
   = Leaf
@@ -51,10 +51,7 @@ satisfy cond = Parser $ \case
   _                 -> ParseError
 
 parseInt :: Parser Int
-parseInt =
-  multiple (parseList (satisfy isDigit))
-    & fmap (fmap digitToInt)
-    & fmap (foldl' (\acc x -> acc * 10 + x) 0)
+parseInt = fmap (foldl' (\acc x -> acc * 10 + x) 0 . fmap digitToInt) (multiple (parseList (satisfy isDigit)))
 
 multiple :: Parser [a] -> Parser (NonEmpty a)
 multiple pa = Parser $ \s -> case run pa s of
@@ -85,18 +82,15 @@ remainder :: Parser String
 remainder = Parser $ \s -> Parsed s []
 
 parse :: String -> [LogMessage]
-parse string = lines string & fmap (run parseMessage) 
-  & foldMap( \case
+parse string = lines string & fmap (run parseMessage)
+  & foldMap ( \case
     Parsed msg _ -> [msg]
-    _            -> []   
+    _            -> []
   )
 
 insert :: LogMessage -> Tree LogMessage -> Tree LogMessage
-insert (Unknown _) tree = tree
-insert newMessage@(LogMessage _ newTimestamp _) tree = case tree of
-  Leaf                 -> Node Leaf newMessage Leaf
-  Node l (Unknown _) r -> Node l newMessage r
-  Node l oldMessage@(LogMessage _ oldTimestamp _) r ->
+insert message Leaf = Node Leaf message Leaf
+insert newMessage@(LogMessage _ newTimestamp _) (Node l oldMessage@(LogMessage _ oldTimestamp _ ) r) =
     if newTimestamp < oldTimestamp
       then Node (insert newMessage l) oldMessage r
       else Node l oldMessage (insert newMessage r)

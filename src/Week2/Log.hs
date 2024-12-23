@@ -1,7 +1,5 @@
 module Week2.Log where
 
-import Control.Applicative
-
 data MessageType = Info
                  | Warning
                  | Error Int
@@ -10,7 +8,6 @@ data MessageType = Info
 type TimeStamp = Int
 
 data LogMessage = LogMessage MessageType TimeStamp String
-                | Unknown String
   deriving (Show, Eq)
 
 data MessageTree = Leaf
