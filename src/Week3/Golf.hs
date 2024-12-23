@@ -1,3 +1,3 @@
-module Golf where 
+module Week3.Golf where 
 
 skips :: [a] -> [[a]]
