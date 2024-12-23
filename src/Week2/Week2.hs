@@ -21,6 +21,9 @@ data ParseResult a = ParseError | Parsed a Remainder
 
 newtype Parser a = Parser {run :: String -> ParseResult a}
 
+zero :: Parser a
+zero = Parser { run = const ParseError }
+
 instance Functor Parser where
   fmap :: (a -> b) -> Parser a -> Parser b
   fmap f pa = Parser $ \s -> case run pa s of
@@ -42,21 +45,24 @@ instance Monad Parser where
     ParseError    -> ParseError
     Parsed a rest -> run (f a) rest
 
+item :: Parser Char
+item = Parser $ \case
+  []    -> ParseError 
+  x: xs -> Parsed x xs
+
 space :: Parser Char
 space = satisfy (== ' ')
 
 satisfy :: (Char -> Bool) -> Parser Char
-satisfy cond = Parser $ \case
-  (x : xs) | cond x -> Parsed x xs
-  _                 -> ParseError
+satisfy cond = item >>= \x -> if cond x then pure x else zero
 
 parseInt :: Parser Int
 parseInt = fmap (foldl' (\acc x -> acc * 10 + x) 0 . fmap digitToInt) (multiple (parseList (satisfy isDigit)))
 
 multiple :: Parser [a] -> Parser (NonEmpty a)
-multiple pa = Parser $ \s -> case run pa s of
-  Parsed (x : xs) rest -> Parsed (x :| xs) rest
-  _                    -> ParseError
+multiple pa = pa >>= \case
+   x : xs -> pure (x :| xs)
+   _      -> zero 
 
 parseList :: Parser a -> Parser [a]
 parseList parser = Parser $ \s -> case run parser s of
