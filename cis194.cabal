@@ -12,7 +12,7 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  Week1,Week2.Week2,Week2.Log
+    exposed-modules:  Week1,Week2.Week2,Week2.Log,Week3.Golf
     build-depends:    base ^>=4.17.2.1
     hs-source-dirs:   src
     default-language: GHC2021
