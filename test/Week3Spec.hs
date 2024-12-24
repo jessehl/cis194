@@ -21,6 +21,6 @@ spec = do
     it "should work3" $
       localMaxima [1,2,3,4,5] `shouldSatisfy` (== [])
 
-  descrie "histogram" $ do 
+  describe "histogram" $ do 
     it "should work" $
-      histogram [3,5] `shouldSatisfy` (==" * * \n==========\n0123456789\n")
+      histogram [3,5] `shouldSatisfy` (=="   * *    \n==========\n0123456789\n")
