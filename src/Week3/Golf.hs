@@ -25,7 +25,8 @@ counts xa = fmap (\x -> (Data.List.NonEmpty.head x, length x)) $ grouped xa
 matrix :: [Integer] -> [[String]]
 matrix xa = reverse $ transpose $  do
   nr <- [0..9]
+  let maxScore   = foldl (flip max) 0 $ fmap snd (counts xa)
   let maybeScore = find (\(number, _) -> nr == number) $ counts xa
   let score      = maybe 0 snd maybeScore
-  let scoreBar   = show nr : "=" : replicate score "*" ++ replicate (10  - score) " "
+  let scoreBar   = show nr : "=" : replicate score "*" ++ replicate (maxScore  - score) " "
   pure scoreBar
