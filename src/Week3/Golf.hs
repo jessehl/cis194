@@ -1,10 +1,8 @@
 module Week3.Golf where
-import Data.List ( sortBy, sort )
+import Data.List (sortBy, sort, transpose)
 import Data.Ord (comparing, Down (Down))
 import Data.List.NonEmpty (group, head)
-import GHC.Base (NonEmpty)
 import Data.Foldable (find)
-import Data.List (transpose)
 
 skips :: [a] -> [[a]]
 skips xs = [[val | (idx, val) <- zip [1..] xs, idx `mod` n == 0] | n <- fmap snd (zip xs [1..])]
@@ -14,20 +12,14 @@ localMaxima lst = sortBy (comparing Data.Ord.Down) $ concatMap (\(left, this, ri
 
 
 histogram :: [Int] -> String
-histogram xa = unlines $ fmap concat $ matrix xa
-
-grouped :: (Eq a, Ord a) => [a] -> [NonEmpty a]
-grouped xs = group $ sort xs
-
-counts :: (Eq a, Ord a) => [a] -> [(a, Int)]
-counts xa = fmap (\x -> (Data.List.NonEmpty.head x, length x)) $ grouped xa
+histogram xa = unlines $ concat <$> matrix xa
 
 matrix :: [Int] -> [[String]]
 matrix xa = reverse $ transpose $  do
-  let scores     = counts xa 
+  let scores  = fmap (\x -> (Data.List.NonEmpty.head x, length x)) $ group $ sort xa
   let maxScore   = foldl (flip max) 0 $ fmap snd scores
-  nr <- [0..maxScore]
-  let maybeScore = find (\(number, _) -> nr == number) $ scores
+  nr <- [0..9]
+  let maybeScore = find (\(number, _) -> nr == number) scores
   let score      = maybe 0 snd maybeScore
   let scoreBar   = show nr : "=" : replicate score "*" ++ replicate (maxScore  - score) " "
   pure scoreBar
