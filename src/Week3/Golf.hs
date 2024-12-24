@@ -7,3 +7,6 @@ skips xs = [[val | (idx, val) <- zip [1..] xs, idx `mod` n == 0] | n <- fmap snd
 
 localMaxima :: [Integer] -> [Integer]
 localMaxima lst = sortBy (comparing Data.Ord.Down) $ concatMap (\(left, this, right) -> ([this | this > left && this > right])) (zip3 lst (tail lst) (tail $ tail lst))
+
+histogram :: [Integer] -> String
+histogram x = show x

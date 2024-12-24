@@ -20,3 +20,7 @@ spec = do
       localMaxima [2,3,4,1,5] `shouldSatisfy` (== [4])
     it "should work3" $
       localMaxima [1,2,3,4,5] `shouldSatisfy` (== [])
+
+  descrie "histogram" $ do 
+    it "should work" $
+      histogram [3,5] `shouldSatisfy` (==" * * \n==========\n0123456789\n")
