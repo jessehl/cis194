@@ -9,5 +9,5 @@ main :: IO ()
 main = do
    messages <- testParse parse 1000000 "resources/Week2/error.log"
    traverse_ print (inorder (build messages))
-   print (histogram [1, 4, 5, 3])
+   putStr (histogram [1, 4,4,4,4, 5, 3])
 
