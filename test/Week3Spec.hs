@@ -12,7 +12,11 @@ spec = do
       skips "hello!" == ["hello!", "el!", "l!", "l", "o", "!"] `shouldBe` True
     it "should work 1" $
       skips [1] == [[1]] `shouldBe` True
-    it "should work True" $
-      skips [True,False] == [[True,False], [False]] `shouldBe` True
-    -- it "should work []" $ 
-    --   skips [] == [] `shouldBe` True
+  
+  describe "localMaxima" $ do 
+    it "should work1" $
+      localMaxima [2,9,5,6,1] `shouldSatisfy` (== [9,6])
+    it "should work2" $
+      localMaxima [2,3,4,1,5] `shouldSatisfy` (== [4])
+    it "should work3" $
+      localMaxima [1,2,3,4,5] `shouldSatisfy` (== [])
