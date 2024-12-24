@@ -27,5 +27,5 @@ matrix xa = reverse $ transpose $  do
   nr <- [0..9]
   let maybeScore = find (\(number, _) -> nr == number) $ counts xa
   let score      = maybe 0 snd maybeScore
-  let scoreBar   = show nr : "=" : replicate score "x" ++ replicate (10 - score) " "
+  let scoreBar   = show nr : "=" : replicate score "*" ++ replicate (10  - score) " "
   pure scoreBar
