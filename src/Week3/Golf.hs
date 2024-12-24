@@ -6,4 +6,4 @@ skips :: [a] -> [[a]]
 skips xs = [[val | (idx, val) <- zip [1..] xs, idx `mod` n == 0] | n <- fmap snd (zip xs [1..])]
 
 localMaxima :: [Integer] -> [Integer]
-localMaxima lst = sortBy (comparing Data.Ord.Down) $ concatMap (\(left, this, right) -> ([this | this > left && this > right])) (zip3 (tail $ tail lst) (tail lst) lst)
+localMaxima lst = sortBy (comparing Data.Ord.Down) $ concatMap (\(left, this, right) -> ([this | this > left && this > right])) (zip3 lst (tail lst) (tail $ tail lst))
