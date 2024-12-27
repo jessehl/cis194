@@ -19,7 +19,6 @@ matrix xa = reverse $ transpose $  do
   let scores     = fmap (\x -> (Data.List.NonEmpty.head x, length x)) $ group $ sort xa
   let maxScore   = foldl max 0 $ fmap snd scores
   nr             <- [0..9]
-  let maybeScore = find (\(number, _) -> nr == number) scores
-  let score      = maybe 0 snd maybeScore
-  let scoreBar   = show nr : "=" : replicate score "*" ++ replicate (maxScore  - score) " "
+  let score      = maybe 0 snd (find (\(number, _) -> nr == number) scores)
+  let scoreBar   = take (maxScore + 2) $ show nr : "=" : replicate score "*" ++ repeat " "
   pure scoreBar
