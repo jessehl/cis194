@@ -20,5 +20,5 @@ matrix xa = reverse $ transpose $  do
   let maxScore   = foldl max 0 $ fmap snd scores
   nr             <- [0..9]
   let score      = maybe 0 snd (find (\(number, _) -> nr == number) scores)
-  let scoreBar   = show nr : "=" : take maxScore $ replicate score "*" ++ repeat " "
+  let scoreBar   = show nr : "=" : take maxScore (replicate score "*" ++ repeat " ")
   pure scoreBar
