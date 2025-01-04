@@ -24,25 +24,23 @@ data Tree a = Leaf
   | Node Integer (Tree a) a (Tree a)
   deriving (Show, Eq)
 
-
 -- Creates a balanced (but unsorted) Tree.
 foldTree :: [a] -> Tree a
-foldTree = foldr (\z a -> fst $ insert z a) Leaf
+foldTree = foldr insert Leaf
 
--- Inserts an 'a' into the Tree, returning the new Tree, and the number of levels added by the insert.
-insert :: a -> Tree a -> (Tree a, Integer)
-insert a Leaf = (Node 0 Leaf a Leaf, 1)
+-- Returns the Tree including a.
+insert :: a -> Tree a -> Tree a
+insert a Leaf = Node 0 Leaf a Leaf
 insert a (Node int left value right) = case (left, right) of
-  (Leaf, Leaf)                           -> (Node 1 newNode value right, 1)
-  (Leaf, Node{})                         -> (Node int newNode value right, 0)
-  (Node{}, Leaf)                         -> (Node int left value newNode, 0)
-  (Node l _ _ _, Node r _ _ _) |  l < r  -> (Node int newL value right, 0)
-  (Node l _ _ _, Node r _ _ _) |  l > r  -> (Node int left value newR, 0)
-  (Node {}, Node {})                     -> (Node (int + intL) newL value right, intL)
+  (Leaf, _)                    -> Node 1 newNode value right
+  (_, Leaf)                    -> Node 1 left value newNode
+  _ | depth left > depth right -> Node int left value (insert a right)
+  _                            -> Node (max int (depth newLeft + 1)) newLeft value right
   where
-    newNode     =  Node 0 Leaf a Leaf
-    (newL, intL) = insert a left
-    (newR, _)    = insert a right
+    newNode    = Node 0 Leaf a Leaf
+    newLeft    = insert a left
+    depth Leaf = 0
+    depth (Node nr _ _ _) = nr
 
 maybeHead :: Tree a -> Maybe (a, Integer)
 maybeHead t = case t of 
