@@ -1,4 +1,5 @@
 module Week4 where
+import Data.List (foldl')
 
 fun1 :: [Integer] -> Integer
 fun1 [] = 1
@@ -31,15 +32,18 @@ foldTree = foldr insert Leaf
 -- Returns the Tree including a.
 insert :: a -> Tree a -> Tree a
 insert a Leaf = Node 0 Leaf a Leaf
-insert a (Node int left value right) = if depth left >  depth right  
+insert a (Node int left value right) = if depth left >  depth right
   then Node int left value (insert a right)
   else Node (max int (depth newLeft + 1)) newLeft value right
   where
-    newLeft    = insert a left
+    newLeft = insert a left
     depth Leaf = 0
     depth (Node nr _ _ _) = nr
 
 maybeHead :: Tree a -> Maybe (a, Integer)
-maybeHead t = case t of 
-   Leaf -> Nothing 
+maybeHead t = case t of
+   Leaf -> Nothing
    Node int _ a _ -> Just (a, int)
+
+xor :: [Bool] -> Bool
+xor = foldl' (\acc x -> if not x then acc else not acc) False

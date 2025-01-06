@@ -11,4 +11,13 @@ spec = do
 
   describe "fun2" $ do 
     it "should work" $ 
-       fun2 2413354 `shouldSatisfy` (== fun2_ 2413354)
+      fun2 2413354 `shouldSatisfy` (== fun2_ 2413354)
+
+  describe "xor" $  do
+    it "should work" $
+       xor [True, True, False, True] == True &&
+       xor [] == False && 
+       xor [True] == True &&
+       xor [False, True, False] == True &&
+       xor [False, True, False, False, True] `shouldBe` False
+       
