@@ -53,3 +53,6 @@ map' f = foldr (\a acc -> (f a) : acc) []
 
 myFoldl :: (a -> b -> a) -> a -> [b] -> a
 myFoldl f base xs = foldr (flip f)  base (reverse xs)
+
+sieveSundaram :: Int -> [Int]
+sieveSundaram n = [n]
