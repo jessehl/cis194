@@ -66,5 +66,8 @@ toRemove n = concatMap (takeWhile (<=n)) $ do
   j <- [1..(n `div` 3)] 
   pure $ (\i -> i + j + (2 * j * i)) <$> [1..j]
 
+toRemove1 :: Int -> [Int]
+toRemove1 n = takeWhile (<=n) [i + j + (2 * j * i) | j <- [1..(n `div` 3)], i <- [1..j]]
+
 sieveSundaram :: Int -> [Int]
-sieveSundaram n = [(x * 2) + 1 | x <- [1..n], x `notElem` toRemove n]
+sieveSundaram n = [(x * 2) + 1 | x <- [1..n], x `notElem` toRemove1 n]
