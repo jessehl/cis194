@@ -60,7 +60,7 @@ cartProd xs ys = [(x,y) | x <- xs, y <- ys]
 
 toRemove :: Int -> [Int]
 toRemove n = concatMap (takeWhile (<=n)) $ do
-  j <- [1..n] -- TODO: why  is this ..n necessary?
+  j <- [1..n] -- TODO: why is this ..n necessary?
   pure $ (\i -> i + j + (2 * j * i)) <$> [1..j]
 
 sieveSundaram :: Int -> [Int]
