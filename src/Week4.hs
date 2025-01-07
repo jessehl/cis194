@@ -50,3 +50,6 @@ xor = foldl' (\acc x -> if not x then acc else not acc) False
 
 map' :: (a -> b) -> [a] -> [b]
 map' f = foldr (\a acc -> (f a) : acc) []
+
+myFoldl :: (a -> b -> a) -> a -> [b] -> a
+myFoldl f base xs = foldr (flip f)  base (reverse xs)
