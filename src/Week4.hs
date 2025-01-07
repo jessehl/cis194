@@ -54,5 +54,14 @@ map' f = foldr (\a acc -> (f a) : acc) []
 myFoldl :: (a -> b -> a) -> a -> [b] -> a
 myFoldl f base xs = foldr (flip f)  base (reverse xs)
 
+
+cartProd :: [a] -> [b] -> [(a, b)]
+cartProd xs ys = [(x,y) | x <- xs, y <- ys]
+
+toRemove :: Int -> [Int]
+toRemove n = concatMap (takeWhile (<=n)) $ do
+  j <- [1..n] -- TODO: why  is this ..n necessary?
+  pure $ (\i -> i + j + (2 * j * i)) <$> [1..j]
+
 sieveSundaram :: Int -> [Int]
-sieveSundaram n = [n]
+sieveSundaram n = [(x * 2) + 1 | x <- [1..n], x `notElem` toRemove n]
