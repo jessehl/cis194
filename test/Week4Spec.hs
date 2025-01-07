@@ -23,7 +23,7 @@ spec = do
 
   describe "sieveSundaram" $ do 
     it "should work" $
-      take (length oddPrimes) (sieveSundaram 100) `shouldBe` oddPrimes
+      take (length oddPrimes) (sieveSundaram 10000000) `shouldBe` oddPrimes
       where 
         oddPrimes = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
   

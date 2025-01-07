@@ -58,9 +58,15 @@ myFoldl f base xs = foldr (flip f)  base (reverse xs)
 cartProd :: [a] -> [b] -> [(a, b)]
 cartProd xs ys = [(x,y) | x <- xs, y <- ys]
 
+-- condition: i + j + 2*i*j ≤ n
+-- so the max usable j value (i.e. when i = 1) makes the condition:
+-- 1 + j + 2*1*j ≤ n
+-- 1 + 3*j       ≤ n
+-- 1/3 + j       ≤ n/3
+-- j             ≤ n/3 - (1/3)
 toRemove :: Int -> [Int]
 toRemove n = concatMap (takeWhile (<=n)) $ do
-  j <- [1..n] -- TODO: why is this ..n necessary?
+  j <- [1..(n `div` 3)] 
   pure $ (\i -> i + j + (2 * j * i)) <$> [1..j]
 
 sieveSundaram :: Int -> [Int]
