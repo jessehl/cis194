@@ -31,3 +31,5 @@ instance Expr ExprT where
     mul = Mul
     lit = Lit
 
+foo :: ExprT 
+foo = mul (add (lit 2) (lit 3)) (lit 4)
