@@ -26,7 +26,6 @@ class Expr a where
 
 
 instance Expr ExprT where
-    lit :: Integer -> ExprT
     add = Add
     mul = Mul
     lit = Lit
