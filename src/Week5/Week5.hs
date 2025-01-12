@@ -30,6 +30,11 @@ instance Expr ExprT where
     mul = Mul
     lit = Lit
 
+instance Expr Integer where
+    add = (+)
+    mul = (*)
+    lit a = a
+
 
 instance Expr Bool where 
     add = (||)
@@ -54,3 +59,12 @@ newtype MinMax = MinMax Integer deriving (Eq, Show, Ord)
 
 expression :: Mod7
 expression = mul (add (lit 2) (lit 3)) (lit 4)
+
+testExp :: Expr a => Maybe a
+testExp = parseExp lit add mul "(3 * -4) + 5"
+
+testInteger = testExp :: Maybe Integer
+testBool = testExp :: Maybe Bool
+testMM = testExp :: Maybe MinMax
+testSat = testExp :: Maybe Mod7
+
