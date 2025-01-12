@@ -30,5 +30,27 @@ instance Expr ExprT where
     mul = Mul
     lit = Lit
 
-foo :: ExprT 
-foo = mul (add (lit 2) (lit 3)) (lit 4)
+
+instance Expr Bool where 
+    add = (||)
+    mul = (&&)
+    lit = (<0)
+
+instance Expr MinMax where
+    add = max
+    mul = min
+    lit = MinMax
+
+instance Expr Mod7 where
+    add a1 a2 = mod (a1 + a2) 7
+    mul a1 a2 = (a1 * a2) `mod` 7
+    lit = Mod7
+
+
+
+-- Why the need for the deriving clauses here? Doesn't Integer already have instances for those (type) classes?
+newtype Mod7 = Mod7 Integer deriving (Eq, Show, Enum, Integral, Real, Ord, Num) 
+newtype MinMax = MinMax Integer deriving (Eq, Show, Ord)
+
+expression :: Mod7
+expression = mul (add (lit 2) (lit 3)) (lit 4)
