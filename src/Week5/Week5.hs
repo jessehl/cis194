@@ -77,9 +77,15 @@ instance Expr Program where
     mul a1 a2 = a1 ++ a2 ++ [SV.Mul]
     add a1 a2 = a1 ++ a2 ++ [SV.Add]
 
- 
+
 expr :: Program 
 expr =  mul (mul (add (lit 2) (lit 3)) (lit 4)) (lit 10)
 
 programResult:: Either String SV.StackVal
 programResult = SV.stackVM expr
+
+compile :: String -> Maybe Program
+compile = parseExp lit add mul
+
+compileAndRun :: String -> Either String SV.StackVal
+compileAndRun source = maybe (Left "program didn't compile") SV.stackVM (compile source)
