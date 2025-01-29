@@ -1,8 +1,12 @@
+{-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE LambdaCase #-}
+
 module Week5.Week5 where
 
 import Week5.ExprT
 import Week5.Parser(parseExp)
+import Week5.StackVM(Program)
+import qualified Week5.StackVM as SV
 
 eval :: ExprT -> Integer
 eval = \case
@@ -36,7 +40,7 @@ instance Expr Integer where
     lit a = a
 
 
-instance Expr Bool where 
+instance Expr Bool where
     add = (||)
     mul = (&&)
     lit = (<0)
@@ -54,7 +58,7 @@ instance Expr Mod7 where
 
 
 -- Why the need for the deriving clauses here? Doesn't Integer already have instances for those (type) classes?
-newtype Mod7 = Mod7 Integer deriving (Eq, Show, Enum, Integral, Real, Ord, Num) 
+newtype Mod7 = Mod7 Integer deriving (Eq, Show, Enum, Integral, Real, Ord, Num)
 newtype MinMax = MinMax Integer deriving (Eq, Show, Ord)
 
 expression :: Mod7
@@ -68,5 +72,14 @@ testBool = testExp :: Maybe Bool
 testMM = testExp :: Maybe MinMax
 testSat = testExp :: Maybe Mod7
 
+instance Expr Program where
+    lit a = [SV.PushI a]
+    mul a1 a2 = a1 ++ a2 ++ [SV.Mul]
+    add a1 a2 = a1 ++ a2 ++ [SV.Add]
 
+ 
+expr :: Program 
+expr =  mul (mul (add (lit 2) (lit 3)) (lit 4)) (lit 10)
 
+programResult:: Either String SV.StackVal
+programResult = SV.stackVM expr
