@@ -4,4 +4,4 @@ import Week6
 
 main :: IO ()
 main = do
-   print $ fib 6
+   print $ take 10 fibs1
