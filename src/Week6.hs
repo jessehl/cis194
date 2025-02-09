@@ -12,5 +12,5 @@ fibs1 = fmap fib [0..]
 fibs2 :: [Integer]
 fibs2 = 0 : go 0 1
   where 
-    go l1 l2 = nw : go l2 nw 
-       where nw = l1 + l2
+    go n1 n2 = n3 : go n2 n3 
+       where n3 = n1 + n2
