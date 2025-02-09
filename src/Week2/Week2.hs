@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveFoldable #-}
 {-# LANGUAGE LambdaCase #-}
 
 module Week2.Week2 where
