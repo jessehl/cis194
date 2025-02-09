@@ -29,3 +29,6 @@ streamRepeat a = Cons a (streamRepeat a)
 
 streamMap :: (a -> b) -> Stream a -> Stream b 
 streamMap f (Cons a remainder) = Cons (f a) (streamMap f remainder)
+
+streamFromSeed :: (a -> a) -> a -> Stream a 
+streamFromSeed f a = Cons a (streamFromSeed f (f a))
