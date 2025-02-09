@@ -23,3 +23,9 @@ data Stream a = Cons a (Stream a) deriving Foldable
 
 instance Show a => Show (Stream a) where
     show stream =  "Stream(" ++ intercalate ", " (take 20 (fmap show (toList stream))) ++ ", ..., ∞)"
+
+streamRepeat :: a -> Stream a 
+streamRepeat a = Cons a (streamRepeat a)
+
+streamMap :: (a -> b) -> Stream a -> Stream b 
+streamMap f (Cons a remainder) = Cons (f a) (streamMap f remainder)
