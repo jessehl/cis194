@@ -16,7 +16,4 @@ fibs2 = 0 : go 0 1
        where n3 = n1 + n2
 
 
-data Stream a = Cons a (Stream a) 
-
-streamToList :: Stream a -> [a]
-streamToList strm = case strm of Cons a stream -> a : streamToList stream
+data Stream a = Cons a (Stream a) deriving Foldable
