@@ -4,4 +4,5 @@ import Week6
 
 main :: IO ()
 main = do
-   print $ take 1000 fibs2
+   let ones:: Stream Int = Cons 1 ones
+   print $ take 1000 $ streamToList ones
