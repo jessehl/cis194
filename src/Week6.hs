@@ -1,7 +1,6 @@
 module Week6 where
 import Data.Foldable (Foldable(toList))
 import Data.List (intercalate)
-import GHC.Base (Opaque(O))
 
 fib :: Integer -> Integer
 
@@ -24,14 +23,21 @@ data Stream a = Cons a (Stream a) deriving Foldable
 instance Show a => Show (Stream a) where
     show stream =  "Stream(" ++ intercalate ", " (take 20 (fmap show (toList stream))) ++ ", ..., ∞)"
 
-streamRepeat :: a -> Stream a 
+streamRepeat :: a -> Stream a
 streamRepeat a = Cons a (streamRepeat a)
 
-streamMap :: (a -> b) -> Stream a -> Stream b 
+streamMap :: (a -> b) -> Stream a -> Stream b
 streamMap f (Cons a remainder) = Cons (f a) (streamMap f remainder)
 
-streamFromSeed :: (a -> a) -> a -> Stream a 
+streamFromSeed :: (a -> a) -> a -> Stream a
 streamFromSeed f a = Cons a (streamFromSeed f (f a))
 
 nats :: Stream Integer
 nats = streamFromSeed (+1) 1
+
+interLeaveStreams :: Stream a -> Stream a -> Stream a
+interLeaveStreams (Cons a1 remainder1) (Cons a2 remainder2) = Cons a1 (Cons a2 $ interLeaveStreams remainder1 remainder2)
+
+-- ruler :: Stream Integer
+-- ruler = streamRepeat 1                                                     [1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1, 5]
+--    where start :: [Int] = [1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1, 5]
