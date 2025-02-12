@@ -35,8 +35,8 @@ streamFromSeed f a = Cons a (streamFromSeed f (f a))
 nats :: Stream Integer
 nats = streamFromSeed (+1) 1
 
-interLeaveStreams :: Stream a -> Stream a -> Stream a
-interLeaveStreams (Cons a1 remainder1) (Cons a2 remainder2) = Cons a1 (Cons a2 $ interLeaveStreams remainder1 remainder2)
+interleaveStreams :: Stream a -> Stream a -> Stream a
+interleaveStreams (Cons a1 remainder1) (Cons a2 remainder2) = Cons a1 (Cons a2 $ interleaveStreams remainder1 remainder2)
 
 -- ruler :: Stream Integer
 -- ruler = streamRepeat 1                                                     [1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1, 5]
