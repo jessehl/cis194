@@ -4,4 +4,4 @@ import Week6
 
 main :: IO ()
 main = do
-   print $ interleaveStreams nats (streamRepeat 0)
+   print ruler
