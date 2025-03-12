@@ -38,14 +38,6 @@ nats = streamFromSeed (+1) 1
 interleaveStreams :: Stream a -> Stream a -> Stream a
 interleaveStreams (Cons a1 remainder1) (Cons a2 remainder2) = Cons a1 (Cons a2 $ interleaveStreams remainder1 remainder2)
 
--- Ruler1 from ruler2
-ruler1 :: Stream Integer -> Stream Integer
-ruler1 = interleaveStreams (streamRepeat 0)
-
--- Ruler2 from ruler1
-ruler2 :: Stream Integer -> Stream Integer 
-ruler2 = streamMap (+1) 
 
 ruler :: Stream Integer 
-ruler = undefined
-
+ruler = Cons 0 (interleaveStreams (streamMap (+1) ruler) (streamRepeat 0))
