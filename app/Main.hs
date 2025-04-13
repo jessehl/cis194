@@ -4,4 +4,5 @@ import Week6
 
 main :: IO ()
 main = do
-   print fibs2
+   let res = x
+   print res
