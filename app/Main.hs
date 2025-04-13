@@ -4,4 +4,4 @@ import Week6
 
 main :: IO ()
 main = do
-   print ruler
+   print fibs2
