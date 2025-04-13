@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# OPTIONS_GHC -fno-warn-missing-methods #-}
 module Week6 where
 import Data.Foldable (Foldable(toList))
 import Data.List (intercalate)
