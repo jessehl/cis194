@@ -46,14 +46,3 @@ zipStreams streamA streamB = case (streamA, streamB) of
 
 ruler :: Stream Integer
 ruler = Cons 0 (interleaveStreams (streamMap (+1) ruler) (streamRepeat 0))
-
-x :: Stream Integer
-x = 0 + (1 * x)
-
-instance Num (Stream Integer) where
-  fromInteger n = Cons n (streamRepeat 0)
-  negate = streamMap (*(-1))
-  (+) streamA streamB = streamMap (uncurry (+)) (zipStreams streamA streamB)
-  (*) streamA streamB = case (streamA, streamB) of
-    (Cons a ra, Cons b rb) -> Cons (a * b) (streamMap (*a) rb + streamMap (uncurry (*)) (zipStreams ra streamB))
-
