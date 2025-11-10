@@ -12,8 +12,8 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  Week1,Week2.Week2,Week2.Log,Week3.Golf,Week4,Week5.Week5,Week5.ExprT,Week5.Parser,Week5.StackVM,Week6
-    build-depends:    base ^>=4.17.2.1
+    exposed-modules:  Week1,Week2.Week2,Week2.Log,Week3.Golf,Week4,Week5.Week5,Week5.ExprT,Week5.Parser,Week5.StackVM,Week6,Week7.Editor,Week7.Buffer,Week7.StringBuffer,Week7.JoinList
+    build-depends:    mtl ^>=2.2.2, base ^>=4.17.2.1
     hs-source-dirs:   src
     default-language: GHC2021
 

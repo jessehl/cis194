@@ -1,8 +1,11 @@
 module Main where
 
-import Week6
+import Week7.Editor(runEditor, getCurLine)
+
+
+
 
 main :: IO ()
-main = do
-   let res = x
+main = do 
+   res <- runEditor getCurLine "329999999\n234"
    print res
